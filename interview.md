@@ -1,23 +1,45 @@
 ## java相关
 
-1. **线程池如何进行调度？**
+**1. 线程池如何进行调度？**
 --------------
-1. 线程池的好处：
-- 线程复用，避免线程重复创建和销毁带来的性能开销
-- 控制最大的线程并发数，提高系统资源利用率，避免过多的资源竞争造成阻塞
-- 能对多线程进行简单的控制，方便使用
-2. 线程池的调度过程：
-- 线程池创建的时候线程数量是0
-- 当提交任务（Runnable）执行时要经过一下判断：
-  1. 当前线程数量小于核心线程数量，直接创建线程执行任务
-  2. 当前线程数量大于核心线程数量同时小于最大线程数量时也是直接创建线程执行任务
-  3. 当前线程数量大于等于最大线程数量时，会将任务放到等待队列（BlockQueueList）中
-  4. 当线程执行完时，如果等待队列不为空会取出一个任务执行
-  5. 当等待队列为空时，如果线程空闲时间超过了keepAliveTime，会将非核心线程销毁，最终将线程池线程数量收缩到核心线程数量
-3. 线程池是如何实现的线程复用？
-  首先要明白线程的生命周期，创建-就绪-执行-阻塞-死亡，所以当线程的run方法执行结束的时候线程就会被销毁，所以达到复用就是让线程的run方法一直执行下去
-  通过Worker实现的线程复用，创建Worker时会同时创建一个线程，它的run方法中包含一个while循环，循环条件是判断当前的task或者BlockQueueList是否为空，BlockQueueList的take()方法如果
-  返回null会造成阻塞，所以worker的run方法可以一直运行下去，从而达到了线程的复用
+  1. 线程池的好处：
+  - 线程复用，避免线程重复创建和销毁带来的性能开销
+  - 控制最大的线程并发数，提高系统资源利用率，避免过多的资源竞争造成阻塞
+  - 能对多线程进行简单的控制，方便使用
+  2. 线程池的调度过程：
+  - 线程池创建的时候线程数量是0
+  - 当提交任务（Runnable）执行时要经过一下判断：
+    1. 当前线程数量小于核心线程数量，直接创建线程执行任务
+    2. 当前线程数量大于核心线程数量同时小于最大线程数量时也是直接创建线程执行任务
+    3. 当前线程数量大于等于最大线程数量时，会将任务放到等待队列（BlockQueueList）中
+    4. 当线程执行完时，如果等待队列不为空会取出一个任务执行
+    5. 当等待队列为空时，如果线程空闲时间超过了keepAliveTime，会将非核心线程销毁，最终将线程池线程数量收缩到核心线程数量
+  3. 线程池是如何实现的线程复用？
+  
+    首先要明白线程的生命周期，创建-就绪-执行-阻塞-死亡，所以当线程的run方法执行结束的时候线程就会被销毁，所以达到复用就是让线程的run方法一直执行下去
+    通过Worker实现的线程复用，创建Worker时会同时创建一个线程，它的run方法中包含一个while循环，循环条件是判断当前的task或者BlockQueueList是否为空，BlockQueueList的take()方法如果
+    返回null会造成阻塞，所以worker的run方法可以一直运行下去，从而达到了线程的复用
+    
+**2. 系统提供默认线程池的几种类型**
+----
+线程池的继承结构：Executor(祖先)-ExecutorService(丰富了接口方法)-AbstractExecutorService(抽象类)-ThreadPoolExecutor(最原始的线程池类)
+Executors：线程池的工厂类
+线程池构造方法参数解释：
+```
+public ThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue){
+  this(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, Executors.defaultThreadFactory(), defaultHandler);
+  }
+```
+corePoolSize:核心线程数；
+maximumPoolSize:最大可创建的线程数；
+keepAliveTime:非核心线程可空闲时间;
+unit:时间单位
+workQueue:线程池满时，任务的等待队列
+系统提供的线程池创建方法都是根据上面的构造方法进行创建的：
+  1. newSingleThreadPool: 只有一个线程的线程池，任务串行执行
+  2. newFixedThreadPool: 只有固定的核心线程
+  3. cachedThreadPool: 无限制线程数量的线程池，线程可自动回收
+  4. scheduledThreadPool: 核心线程固定，不限最大线程数量，可周期性执行任务的线程池
 
 2. jvm内存区域分配？哪些区域会发生OOM，如何发生的？
 
@@ -33,7 +55,7 @@
 
 8. sychornized作用，lock的机制实现原理
 
-9. 系统提供默认线程池的几种类型
+
 
 - Android 相关
 
