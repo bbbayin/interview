@@ -17,7 +17,7 @@
   3. 线程池是如何实现的线程复用？
   
     首先要明白线程的生命周期，创建-就绪-执行-阻塞-死亡，所以当线程的run方法执行结束的时候线程就会被销毁，所以达到复用就是让线程的run方法一直执行下去
-    通过Worker实现的线程复用，创建Worker时会同时创建一个线程，它的run方法中包含一个while循环，循环条件是判断当前的task或者BlockQueueList是否为空，BlockQueueList的take()方法如果
+    通过Worker实现的线程复用，创建Worker时会同时创建一个线程，它的run方法中包含一个while循环，循环条件是判断当前的task或者BlockingQueue是否为空，BlockingQueue的take()方法如果
     返回null会造成阻塞，所以worker的run方法可以一直运行下去，从而达到了线程的复用
     
 **2. 系统提供默认线程池的几种类型**
