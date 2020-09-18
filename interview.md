@@ -86,6 +86,13 @@ workQueue:线程池满时，任务的等待队列
 3. handler原理，如何处理delay消息，空队列时怎么实现的等待机制
 
 4. view绘制原理，requestLayout一定会触发重新测量和重绘吗？
+-----
+如果当前View在进行布局就不会执行这一次调用，
+requestLayout会把当前View的mPrivateFlags增加两个标志位xxx，然后会递归地调用父布局的requestLayout方法，最终会执行ViewRootImpl#requestLayout
+方法，经过一系列的判断和调用会执行ViewRootImpl#scheduleTraversals()方法->ViewRootImpl#performTraversals()，里面会调用performMeasure(),
+performLayout(),perforDraw()方法。
+它与invalidate()方法区别在于，invalidate()只会对当前的view进行重新绘制，位置大小不会发生改变，requestLayout会对当前的View大小和位置重新计算。
+postInvalidate()是通过ViewRootImpl中的主线程Handler发送了一个更新UI的消息，允许在子线程调用。
 
 5. APP启动流程
 
