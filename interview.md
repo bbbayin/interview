@@ -132,3 +132,5 @@ postInvalidate()是通过ViewRootImpl中的主线程Handler发送了一个更新
 2)第二次提交
 3)第三次提交
 4)第四次提交
+
+*** 14. webview优化 ***
