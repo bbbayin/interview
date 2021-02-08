@@ -4,5 +4,3 @@ init 提交
 2. master 提交的
 
 local 提交的
-
-1. activity启动流程
